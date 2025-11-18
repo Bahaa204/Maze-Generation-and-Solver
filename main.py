@@ -1,5 +1,5 @@
-from pyamaze import maze, agent, COLOR
-from solving import CheckNeighbors
+from pyamaze import maze, agent, COLOR, textLabel
+from Algorithms import A_Star
 
 """
     NOTE: X is the vertical axis and Y is the horizontal axis here
@@ -15,21 +15,28 @@ from solving import CheckNeighbors
    
    
    An agent can trace a path by using the Maze.tracePath() where it takes the 3 parameters.
-   The first being a dictionary that has its keys to be th agents and the values being the path i.e {Agent: path}.
+   The first being a dictionary that has its keys to be the agents and the values being the path i.e {Agent: path}.
    The Path can be either an dict or a list or a string with the direction like "NES" where N: North, E: East, W:west, S:South
      
 """
 
 
-# Creating the maze object
-Maze = maze()
+def main() -> None:
+    # Creating the maze object
+    Maze = maze(10, 5)
 
-# Creating the maze and setting the goal to be the bottom right cell(the last cell in the grid)
-Maze.CreateMaze(loadMaze=r"maze--2025-11-09--17-03-47.csv", x=Maze.rows, y=Maze.cols)
+    # Creating the maze and setting the goal to be the bottom right cell(the last cell in the grid)
+    Maze.CreateMaze(x=Maze.rows, y=Maze.cols)
 
-# Placing the agent at the first cell of the grid
-Agent = agent(parentMaze=Maze, footprints=True, x=1, y=1)
+    # Placing the agent at the first cell of the grid
+    Agent = agent(parentMaze=Maze, footprints=True, x=1, y=1, shape="arrow")
+    a_star = A_Star(Maze)
+    path = a_star.pathfinding()
+    Maze.tracePath({Agent: path})
+    # print(Maze.grid)
+    textLabel(parentMaze=Maze, title="A* Star Algoritihm: ", value=len(path) + 1)
+    Maze.run()
 
-print(Maze.maze_map)
-Maze.tracePath({Agent: Maze.path})
-Maze.run()
+
+if __name__ == "__main__":
+    main()
