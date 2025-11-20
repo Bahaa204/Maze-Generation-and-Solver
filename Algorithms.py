@@ -7,7 +7,7 @@ class A_Star:
     def __init__(self, maze: maze) -> None:
         self.maze = maze
         self.start_cell = (1, 1)
-        self.goal_cell = (maze.rows, maze.cols)
+        self.goal_cell = (self.maze.rows, self.maze.cols)
         self.open_cells = PriorityQueue()
         self.g_cost = {cell: float("inf") for cell in maze.grid}
         self.g_cost[self.start_cell] = 0
@@ -21,8 +21,9 @@ class A_Star:
         target_x, target_y = target_cell
         return abs(current_x - target_x) + abs(current_y - target_y)
 
-    def pathfinding(self):
-        path = dict()
+    def pathFinding(self):
+        path: dict = dict()
+        child_cell = ()
         self.open_cells.put(
             (
                 self.f_cost[self.start_cell],
@@ -78,7 +79,46 @@ class BreadthFirstSearch:
 
 class DepthFirstSearch:
     def __init__(self, maze: maze) -> None:
-        pass
+        self.maze = maze
+        self.start_cell = (1, 1)
+        self.goal_cell = (self.maze.rows, self.maze.cols)
+        self.open_cells = []  # Stack Implementation
+        self.visited_cells = []
+
+    def pathFinding(self):
+        self.open_cells.append(self.start_cell)
+        self.visited_cells.append(self.visited_cells)
+        path: dict = dict()
+        search_path:list = []
+        child_cell = ()
+        while len(self.open_cells) > 0:
+            current_cell = self.open_cells.pop()
+            search_path.append(current_cell)
+            if current_cell == self.goal_cell:
+                break
+            for direction in "ESNW":
+                if self.maze.maze_map[current_cell][direction]:
+                    x, y = current_cell
+                    if direction == "E":
+                        child_cell = (x, y + 1)
+                    elif direction == "S":
+                        child_cell = (x + 1, y)
+                    elif direction == "N":
+                        child_cell = (x - 1, y)
+                    elif direction == "W":
+                        child_cell = (x, y - 1)
+                    if child_cell in self.visited_cells:
+                        continue
+                    self.open_cells.append(child_cell)
+                    self.visited_cells.append(child_cell)
+                    path[child_cell] = current_cell
+
+        reversed_path = dict()
+        cell = self.goal_cell
+        while cell != self.start_cell:
+            reversed_path[path[cell]] = cell
+            cell = path[cell]
+        return search_path, reversed_path
 
 
 class WallFollowing:

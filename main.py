@@ -1,5 +1,5 @@
 from pyamaze import maze, agent, COLOR, textLabel
-from Algorithms import A_Star
+import Algorithms
 
 """
     NOTE: X is the vertical axis and Y is the horizontal axis here
@@ -23,18 +23,28 @@ from Algorithms import A_Star
 
 def main() -> None:
     # Creating the maze object
-    Maze = maze(10, 5)
+    Maze = maze()
 
     # Creating the maze and setting the goal to be the bottom right cell(the last cell in the grid)
     Maze.CreateMaze(x=Maze.rows, y=Maze.cols)
 
-    # Placing the agent at the first cell of the grid
-    Agent = agent(parentMaze=Maze, footprints=True, x=1, y=1, shape="arrow")
-    a_star = A_Star(Maze)
-    path = a_star.pathfinding()
-    Maze.tracePath({Agent: path})
-    # print(Maze.grid)
-    textLabel(parentMaze=Maze, title="A* Star Algoritihm: ", value=len(path) + 1)
+    # Initializing The Algorithms
+    a_star = Algorithms.A_Star(Maze)
+    dfs = Algorithms.DepthFirstSearch(Maze)
+
+    # Placing the agents at the first cell of the grid
+    A_star_Agent = agent(Maze, footprints=True, x=1, y=1, color=COLOR.red)
+    DFS_Agent = agent(Maze, footprints=True, x=1, y=1)
+    DFS_Agent_reverse = agent(Maze, footprints=True, x=1, y=1, color=COLOR.yellow)
+
+    a_star_path = a_star.pathFinding()
+    search_path, reversed_path = dfs.pathFinding()
+
+    Maze.tracePath({A_star_Agent: a_star_path})
+    Maze.tracePath({DFS_Agent: search_path})
+    Maze.tracePath({DFS_Agent_reverse: reversed_path})
+    textLabel(Maze, title="A* Star Algorithm(Red): ", value=len(a_star_path) + 1)
+    textLabel(Maze, title="DFS Algorithm(yellow): ", value=len(search_path) + 1)
     Maze.run()
 
 
