@@ -1,5 +1,6 @@
 from queue import Queue, PriorityQueue
 
+
 class A_Star:
 
     def __init__(self, maze) -> None:
@@ -160,4 +161,61 @@ class DepthFirstSearch:
 
 class WallFollowing:
     def __init__(self, maze) -> None:
-        pass
+        self.maze = maze
+        self.start_cell = (1, 1)
+        self.goal_cell = (self.maze.rows, self.maze.cols)
+        self.directions = {"forward": "N", "left": "W", "back": "S", "right": "E"}
+
+    def RotateClockWise(self):
+        keys = list(self.directions.keys())
+        values = list(self.directions.values())
+        # Rotates the List clockwise by popping the last item and placing it in the first slot
+        values.insert(0, values.pop())
+        # Reconstructs the direction dictionary with the rotated values
+        self.directions = dict(zip(keys, values))
+
+    def RotateAntiClockWise(self):
+        keys = list(self.directions.keys())
+        values = list(self.directions.values())
+        # Rotates the List Anti clockwise by popping the first ele item placing it in the last slot
+        values.append(values.pop(0))
+        # Reconstructs the direction dictionary with the rotated values
+        self.directions = dict(zip(keys, values))
+
+    def MoveForward(self, cell):
+        x, y = cell
+        if self.directions["forward"] == "E":
+            return (x, y + 1), "E"
+        elif self.directions["forward"] == "W":
+            return (x, y - 1), "W"
+        elif self.directions["forward"] == "N":
+            return (x - 1, y), "N"
+        elif self.directions["forward"] == "S":
+            return (x + 1, y), "S"
+
+    def pathFinding(self):
+        path = ""
+        current_cell = self.start_cell
+        while True:
+            print("Current Cell: ", current_cell)
+            if current_cell == self.goal_cell:
+                break
+            if self.maze.maze_map[current_cell][self.directions["left"]] == 0:
+                if self.maze.maze_map[current_cell][self.directions["forward"]] == 0:
+                    self.RotateClockWise()
+                else:
+                    current_cell, d = self.MoveForward(current_cell)
+                    path += d
+            else:
+                self.RotateAntiClockWise()
+                current_cell, d = self.MoveForward(current_cell)
+                path += d
+
+        # path2 is the path where it doesn't explore any dead end
+        path2 = path
+        while "EW" in path2 or "WE" in path2 or "NS" in path2 or "SN" in path2:
+            path2 = path2.replace("EW", "")
+            path2 = path2.replace("WE", "")
+            path2 = path2.replace("NS", "")
+            path2 = path2.replace("SN", "")
+        return path2, path
