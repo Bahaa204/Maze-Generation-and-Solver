@@ -23,7 +23,7 @@ import Algorithms
 
 def main() -> None:
     # Creating the maze object
-    Maze = maze()
+    Maze = maze(20, 20)
 
     # Creating the maze and setting the goal to be the bottom right cell(the last cell in the grid)
     Maze.CreateMaze(x=Maze.rows, y=Maze.cols)
@@ -31,20 +31,31 @@ def main() -> None:
     # Initializing The Algorithms
     a_star = Algorithms.A_Star(Maze)
     dfs = Algorithms.DepthFirstSearch(Maze)
+    bfs = Algorithms.BreadthFirstSearch(Maze)
 
     # Placing the agents at the first cell of the grid
     A_star_Agent = agent(Maze, footprints=True, x=1, y=1, color=COLOR.red)
-    DFS_Agent = agent(Maze, footprints=True, x=1, y=1)
-    DFS_Agent_reverse = agent(Maze, footprints=True, x=1, y=1, color=COLOR.yellow)
+    DFS_Agent_search = agent(Maze, footprints=True, x=1, y=1, color=COLOR.cyan)
+    DFS_Agent_path = agent(Maze, footprints=True, x=1, y=1, color=COLOR.yellow)
+    BFS_Agent_search = agent(Maze, footprints=True, x=1, y=1, color=COLOR.light)
+    BFS_Agent_path = agent(Maze, footprints=True, x=1, y=1, color=COLOR.green)
 
     a_star_path = a_star.pathFinding()
-    search_path, reversed_path = dfs.pathFinding()
+    dfs_search_path, dfs_path = dfs.pathFinding()
+    bfs_search_path, bfs_path = bfs.pathFinding()
 
     Maze.tracePath({A_star_Agent: a_star_path})
-    Maze.tracePath({DFS_Agent: search_path})
-    Maze.tracePath({DFS_Agent_reverse: reversed_path})
+    Maze.tracePath({DFS_Agent_search: dfs_search_path})
+    Maze.tracePath({DFS_Agent_path: dfs_path})
+    Maze.tracePath({BFS_Agent_search: bfs_search_path})
+    Maze.tracePath({BFS_Agent_path: bfs_path})
     textLabel(Maze, title="A* Star Algorithm(Red): ", value=len(a_star_path) + 1)
-    textLabel(Maze, title="DFS Algorithm(yellow): ", value=len(search_path) + 1)
+    textLabel(
+        Maze, title="DFS Algorithm(blue, yellow): ", value=len(dfs_search_path) + 1
+    )
+    textLabel(
+        Maze, title="BFS Algorithm(black, green): ", value=len(bfs_search_path) + 1
+    )
     Maze.run()
 
 
