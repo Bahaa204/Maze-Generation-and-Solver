@@ -3,9 +3,9 @@ from queue import Queue, PriorityQueue
 
 class A_Star:
 
-    def __init__(self, maze) -> None:
+    def __init__(self, maze, start_cell=(1, 1)) -> None:
         self.maze = maze
-        self.start_cell = (1, 1)
+        self.start_cell = start_cell
         self.goal_cell = (self.maze.rows, self.maze.cols)
         self.open_cells = PriorityQueue()
         self.g_cost = {cell: float("inf") for cell in maze.grid}
@@ -21,7 +21,7 @@ class A_Star:
         return abs(current_x - target_x) + abs(current_y - target_y)
 
     def pathFinding(self):
-        path: dict = dict()
+        path = dict()
         child_cell = ()
         self.open_cells.put(
             (
@@ -72,9 +72,9 @@ class A_Star:
 
 
 class BreadthFirstSearch:
-    def __init__(self, maze) -> None:
+    def __init__(self, maze, start_cell=(1, 1)) -> None:
         self.maze = maze
-        self.start_cell = (1, 1)
+        self.start_cell = start_cell
         self.goal_cell = (self.maze.rows, self.maze.cols)
         self.open_cells = Queue()
         self.visited_cells = []
@@ -82,8 +82,8 @@ class BreadthFirstSearch:
     def pathFinding(self):
         self.open_cells.put(self.start_cell)
         self.visited_cells.append(self.visited_cells)
-        path: dict = dict()
-        search_path: list = []
+        path = dict()
+        search_path = []
         child_cell = ()
         while not self.open_cells.empty():
             current_cell = self.open_cells.get()
@@ -116,9 +116,9 @@ class BreadthFirstSearch:
 
 
 class DepthFirstSearch:
-    def __init__(self, maze) -> None:
+    def __init__(self, maze, start_cell=(1, 1)) -> None:
         self.maze = maze
-        self.start_cell = (1, 1)
+        self.start_cell = start_cell
         self.goal_cell = (self.maze.rows, self.maze.cols)
         self.open_cells = []  # Stack Implementation
         self.visited_cells = []
@@ -126,8 +126,8 @@ class DepthFirstSearch:
     def pathFinding(self):
         self.open_cells.append(self.start_cell)
         self.visited_cells.append(self.visited_cells)
-        path: dict = dict()
-        search_path: list = []
+        path = dict()
+        search_path = []
         child_cell = ()
         while len(self.open_cells) > 0:
             current_cell = self.open_cells.pop()
@@ -160,9 +160,9 @@ class DepthFirstSearch:
 
 
 class WallFollowing:
-    def __init__(self, maze) -> None:
+    def __init__(self, maze, start_cell=(1, 1)) -> None:
         self.maze = maze
-        self.start_cell = (1, 1)
+        self.start_cell = start_cell
         self.goal_cell = (self.maze.rows, self.maze.cols)
         self.directions = {"forward": "N", "left": "W", "back": "S", "right": "E"}
 
@@ -177,7 +177,7 @@ class WallFollowing:
     def RotateAntiClockWise(self):
         keys = list(self.directions.keys())
         values = list(self.directions.values())
-        # Rotates the List Anti clockwise by popping the first ele item placing it in the last slot
+        # Rotates the List Anti clockwise by popping the first item and placing it in the last slot
         values.append(values.pop(0))
         # Reconstructs the direction dictionary with the rotated values
         self.directions = dict(zip(keys, values))
@@ -197,18 +197,17 @@ class WallFollowing:
         path = ""
         current_cell = self.start_cell
         while True:
-            print("Current Cell: ", current_cell)
             if current_cell == self.goal_cell:
                 break
             if self.maze.maze_map[current_cell][self.directions["left"]] == 0:
                 if self.maze.maze_map[current_cell][self.directions["forward"]] == 0:
                     self.RotateClockWise()
                 else:
-                    current_cell, d = self.MoveForward(current_cell)
+                    current_cell, d = self.MoveForward(current_cell)  # type:ignore
                     path += d
             else:
                 self.RotateAntiClockWise()
-                current_cell, d = self.MoveForward(current_cell)
+                current_cell, d = self.MoveForward(current_cell)  # type:ignore
                 path += d
 
         # path2 is the path where it doesn't explore any dead end
